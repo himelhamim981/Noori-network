@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noori Network - Manager Pro v10.0</title>
+    <link rel="icon" type="image/jpeg" href="1000105827.jpg">
+    <link rel="apple-touch-icon" href="1000105827.jpg">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary-color: #e2136e; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Tahoma, Geneva, Verdana, sans-serif;
+            background: #fdf2f8;
+            color: #000;
+            -webkit-text-size-adjust: 100%;
+            position: relative;
+            min-height: 100vh;
+            margin: 0;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url("1000105827.jpg");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: min(68vw, 380px);
+            opacity: 0.06;
+            pointer-events: none;
+            z-index: 0;
+        }
+        #authContainer, #mainDashboard { position: relative; z-index: 1; }
+        [id$="Modal"], #settingsMenu { position: fixed; z-index: 100; }
+
+        .dynamic-bg { background-color: var(--primary-color); transition: background-color 0.25s ease; }
+        .dynamic-text { color: var(--primary-color); transition: color 0.25s ease; }
+        .icon-img { width: 42px; height: 42px; object-fit: contain; margin-bottom: 5px; }
+
+        .cartoon-card {
+            border: 3px solid #000;
+            border-radius: 18px;
+            box-shadow: 4px 4px 0px #000;
+            transition: transform 0.12s ease, box-shadow 0.12s ease;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 14px 6px;
+            background: #fff;
+            will-change: transform;
+        }
+        .cartoon-card:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px #000; }
+
+        .hidden { display: none !important; }
+        .input-box {
+            width: 100%;
+            border: 3px solid #000;
+            padding: 12px 14px;
+            border-radius: 16px;
+            margin-bottom: 10px;
+            outline: none;
+            background: #fff;
+            color: #000;
+            font-weight: 800;
+            font-size: 15px;
+        }
+        .settings-input {
+            width: 100%;
+            border: 3px solid #000;
+            padding: 8px 12px;
+            border-radius: 12px;
+            outline: none;
+            background: #fff;
+            color: #000;
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+        .btn-label {
+            font-size: 12px !important;
+            line-height: 1.2;
+            margin-top: 4px;
+            display: block;
+            font-weight: 900 !important;
+            color: #000;
+            text-transform: uppercase;
+        }
+        .sticky-header { position: sticky; top: 0; z-index: 50; border-bottom: 4px solid #000; }
+        .theme-box { width: 38px; height: 38px; border: 3px solid #000; border-radius: 10px; cursor: pointer; }
+        #notepadTextArea {
+            width: 100%;
+            height: 200px;
+            border: 4px solid #000;
+            border-radius: 18px;
+            padding: 14px;
+            font-weight: 600;
+            font-size: 14px;
+            outline: none;
+            background: #fffde7;
+            color: #000;
+        }
+        .switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .25s; border-radius: 34px; border: 2px solid #000; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 4px; bottom: 3px; background-color: white; transition: .25s; border-radius: 50%; border: 2px solid #000; }
+        input:checked + .slider { background-color: #16a34a; }
+        input:checked + .slider:before { transform: translateX(26px); }
+
+        #liveClock {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-weight: 900;
+            background: rgba(0,0,0,0.3);
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 15px;
+            border: 2px solid rgba(255,255,255,0.5);
+            text-align: right;
+            color: #fff;
+        }
+        .calc-bubble { background: white; border: 3px solid #000; padding: 8px 10px; border-radius: 14px; font-weight: bold; box-shadow: 3px 3px 0px #000; text-align: center; }
+        .fiber-line { width: 4px; height: 60px; background: #555; margin: 0 auto; position: relative; }
+        .fiber-left { width: 4px; height: 80px; background: #d93025; position: absolute; bottom: 20px; right: 0; transform: rotate(-45deg); transform-origin: bottom; }
+        .fiber-right { width: 4px; height: 80px; background: #188038; position: absolute; bottom: 20px; left: 0; transform: rotate(45deg); transform-origin: bottom; }
+
+        /* Offline fallback utility classes */
+        .p-2 { padding: 0.5rem; }
+        .p-3 { padding: 0.75rem; }
+        .p-4 { padding: 1rem; }
+        .p-5 { padding: 1.25rem; }
+        .p-6 { padding: 1.5rem; }
+        .p-8 { padding: 2rem; }
+        .px-3 { padding-left: 0.75rem; padding-right: 0.75rem; }
+        .px-4 { padding-left: 1rem; padding-right: 1rem; }
+        .py-2 { padding-top: 0.5rem; padding-bottom: 0.5rem; }
+        .pt-4 { padding-top: 1rem; }
+        .pb-24 { padding-bottom: 6rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-3 { margin-bottom: 0.75rem; }
+        .mb-4 { margin-bottom: 1rem; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mt-4 { margin-top: 1rem; }
+        .grid { display: grid; }
+        .grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .gap-2 { gap: 0.5rem; }
+        .gap-3 { gap: 0.75rem; }
+        .gap-4 { gap: 1rem; }
+        .flex { display: flex; }
+        .flex-1 { flex: 1 1 0%; }
+        .flex-wrap { flex-wrap: wrap; }
+        .flex-col { flex-direction: column; }
+        .items-center { align-items: center; }
+        .items-end { align-items: flex-end; }
+        .justify-between { justify-content: space-between; }
+        .justify-center { justify-content: center; }
+        .space-y-2 > * + * { margin-top: 0.5rem; }
+        .space-y-3 > * + * { margin-top: 0.75rem; }
+        .space-y-4 > * + * { margin-top: 1rem; }
+        .space-y-5 > * + * { margin-top: 1.25rem; }
+        .w-full { width: 100%; }
+        .text-center { text-align: center; }
+        .text-white { color: #fff; }
+        .text-black { color: #000; }
+        .font-black { font-weight: 900; }
+        .font-bold { font-weight: 700; }
+        .italic { font-style: italic; }
+        .uppercase { text-transform: uppercase; }
+        .rounded-xl { border-radius: 0.75rem; }
+        .rounded-2xl { border-radius: 1rem; }
+        .rounded-3xl { border-radius: 1.5rem; }
+        .fixed { position: fixed; }
+        .inset-0 { top: 0; right: 0; bottom: 0; left: 0; }
+        .relative { position: relative; }
+        .cursor-pointer { cursor: pointer; }
+        .bg-white { background-color: #fff; }
+        .bg-yellow-300 { background-color: #fde047; }
+        .bg-cyan-300 { background-color: #67e8f9; }
+        .bg-green-100 { background-color: #dcfce7; }
+        .bg-blue-100 { background-color: #dbeafe; }
+        .bg-emerald-100 { background-color: #d1fae5; }
+        .bg-orange-100 { background-color: #ffedd5; }
+        .bg-indigo-100 { background-color: #e0e7ff; }
+        .bg-purple-100 { background-color: #f3e8ff; }
+        .bg-red-100 { background-color: #fee2e2; }
+        .bg-yellow-100 { background-color: #fef9c3; }
+        .bg-red-600 { background-color: #dc2626; }
+        .bg-green-600 { background-color: #16a34a; }
+        .bg-gray-300 { background-color: #d1d5db; }
+        .bg-gray-900 { background-color: #111827; }
+        .border-2 { border-width: 2px; border-style: solid; }
+        .border-4 { border-width: 4px; border-style: solid; }
+        .border-black { border-color: #000; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body id="mainBody">
+
+<div id="authContainer">
+    <div id="registerPage" class="flex flex-col items-center justify-center min-h-screen p-8">
+        <h2 class="text-4xl font-black mb-8 uppercase italic underline dynamic-text">Noori Network</h2>
+        <input type="text" id="regName" placeholder="Owner Name" class="input-box">
+        <input type="email" id="regEmail" placeholder="Gmail Address" class="input-box">
+        <input type="password" id="regPass" placeholder="Set Password" class="input-box">
+        <input type="number" id="regOTP" placeholder="Enter Referral OTP" class="input-box" style="border-color: #e2136e;">
+
+        <div class="w-full bg-white border-4 border-black rounded-2xl p-4 mb-4">
+            <p class="font-black text-xs uppercase italic mb-2 text-black">Feature Permissions:</p>
+            <label class="flex items-center justify-between py-1.5 font-bold text-sm cursor-pointer">
+                <span>Fiber Tap Calculator (Secret Code Required)</span>
+                <input type="checkbox" id="permFiber" onchange="handleRegisterCheckboxChange('fiber', this)" class="w-5 h-5 cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between py-1.5 font-bold text-sm cursor-pointer">
+                <span>OLT Portal Access (Secret Code Required)</span>
+                <input type="checkbox" id="permOLT" onchange="handleRegisterCheckboxChange('olt', this)" class="w-5 h-5 cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between py-1.5 font-bold text-sm cursor-pointer">
+                <span>Fingerprint Login</span>
+                <input type="checkbox" id="permFinger" checked class="w-5 h-5 cursor-pointer">
+            </label>
+            <label class="flex items-center justify-between py-1.5 font-bold text-sm cursor-pointer">
+                <span>App Themes</span>
+                <input type="checkbox" id="permThemes" checked class="w-5 h-5 cursor-pointer">
+            </label>
+        </div>
+
+        <button onclick="handleRegister()" class="w-full cartoon-card dynamic-bg text-white p-4 font-black text-xl" style="background-color: var(--primary-color); color: #fff;">CREATE ADMIN</button>
+        <p class="mt-6 text-md font-black cursor-pointer" onclick="showLogin()">ALREADY REGISTERED? <span class="dynamic-text">LOGIN</span></p>
+    </div>
+
+    <div id="loginPage" class="hidden flex flex-col items-center justify-center min-h-screen p-8">
+        <h2 class="text-3xl font-black mb-8 uppercase italic dynamic-text">Admin Login</h2>
+        <div class="w-full max-w-sm">
+            <input type="email" id="loginEmail" placeholder="Gmail" class="input-box">
+            <input type="password" id="loginPass" placeholder="Enter Password" class="input-box">
+            <div class="flex gap-4 w-full">
+                <button onclick="handleLogin()" class="flex-1 cartoon-card dynamic-bg text-white p-4 font-black text-xl uppercase italic" style="background-color: var(--primary-color); color: #fff;">Unlock</button>
+                <button id="bioLoginBtn" onclick="handleBiometricAuth()" class="w-24 cartoon-card bg-white border-4 border-black flex items-center justify-center text-4xl"><i class="fa fa-fingerprint text-pink-600"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="mainDashboard" class="hidden">
+    <div class="dynamic-bg p-5 text-white flex justify-between items-center sticky-header" style="background-color: var(--primary-color); color: #fff;">
+        <div>
+            <span id="brandName" class="text-xs font-black uppercase tracking-widest opacity-80">Noori Network Manager v10.0</span>
+            <div id="displayUserName" class="font-black text-2xl italic"></div>
+        </div>
+        <div class="flex flex-col items-end gap-2">
+            <div id="liveClock">00:00:00 AM</div>
+            <div class="flex gap-4">
+                <i class="fa fa-sync-alt text-xl cursor-pointer" onclick="quickRefreshUI()"></i>
+                <i class="fa fa-cog text-3xl cursor-pointer" onclick="toggleSettings()"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Multi-Portal Switcher Bar -->
+    <div class="px-4 pt-4">
+        <div class="bg-white border-4 border-black rounded-2xl p-3 space-y-2">
+            <div class="flex items-center gap-2">
+                <i class="fa fa-book text-black text-lg"></i>
+                <select id="portalSelect" onchange="handlePortalChange(this.value)" class="w-full font-black text-sm bg-pink-50 border-2 border-black rounded-xl px-3 py-2 outline-none text-black"></select>
+            </div>
+            <div class="flex flex-wrap gap-2">
+                <button id="btnNewPortal" onclick="openCreatePortalModal()" class="flex-1 bg-pink-600 text-white border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase" style="background-color: #db2777; color: #fff;"><i class="fa fa-plus mr-1"></i><span>New Portal</span></button>
+                <button id="btnRenamePortal" onclick="openRenamePortalModal()" class="flex-1 bg-yellow-300 text-black border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase"><i class="fa fa-pen mr-1"></i><span>Rename</span></button>
+                <button id="portalLockToggleBtn" onclick="togglePortalLockStatus()" class="bg-gray-900 text-white border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase"><i class="fa fa-lock mr-1"></i><span>Lock</span></button>
+                <button id="btnDeletePortal" onclick="deleteCurrentPortal()" class="bg-red-600 text-white border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase" style="background-color: #dc2626; color: #fff;"><i class="fa fa-trash mr-1"></i><span>Delete Portal</span></button>
+                <button id="btnAllPortals" onclick="openAllPortalsSummaryModal()" class="bg-cyan-300 text-black border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase"><i class="fa fa-chart-bar mr-1"></i><span>All Portals</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="p-4 grid grid-cols-2 gap-4">
+        <div class="bg-yellow-300 rounded-3xl p-5 border-4 border-black">
+            <p id="labelCollection" class="text-black text-[10px] font-black uppercase italic">This Month Collection</p>
+            <h1 class="text-2xl font-black text-black">৳ <span id="balanceText">0</span></h1>
+        </div>
+        <div class="bg-cyan-300 rounded-3xl p-5 border-4 border-black">
+            <p id="labelActive" class="text-black text-[10px] font-black uppercase italic">Active Users</p>
+            <h1 class="text-2xl font-black text-black"><span id="totalClientsCount">0</span></h1>
+        </div>
+    </div>
+
+    <!-- Search Input -->
+    <div class="px-4 mb-3">
+        <div class="relative">
+            <input type="text" id="searchInput" oninput="handleDebouncedSearch(this.value)" placeholder="Search (Username, Name, Phone)..." class="w-full p-4 rounded-2xl border-4 border-black outline-none font-black text-lg bg-white text-black">
+            <i class="fa fa-search absolute right-5 top-5 text-black text-xl"></i>
+        </div>
+    </div>
+
+    <!-- Action Grid -->
+    <div class="grid grid-cols-3 gap-4 p-4 text-center">
+        <div onclick="openBillForm()"><div class="bg-blue-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" class="icon-img"><span class="btn-label" data-en="Add User" data-bn="অ্যাড ইউজার">Add User</span></div></div>
+        <div onclick="toggleImportModal()"><div class="bg-emerald-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/2991/2991144.png" class="icon-img"><span class="btn-label" data-en="Upload File" data-bn="ফাইল আপলোড">Upload File</span></div></div>
+        <div onclick="showDueList()"><div class="bg-orange-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/2942/2942257.png" class="icon-img"><span class="btn-label" data-en="Due List" data-bn="বাকি তালিকা">Due List</span></div></div>
+        <div onclick="showTotalClients()"><div class="bg-indigo-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/681/681494.png" class="icon-img"><span class="btn-label" data-en="All Client" data-bn="সব ক্লায়েন্ট">All Client</span></div></div>
+        <div onclick="syncDataToCloud()"><div class="bg-green-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/2618/2618245.png" class="icon-img"><span class="btn-label" data-en="Backup" data-bn="ব্যাকআপ">Backup</span></div></div>
+        <div onclick="showPaidList()"><div class="bg-purple-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/4645/4645223.png" class="icon-img"><span class="btn-label" data-en="Paid List" data-bn="পেইড তালিকা">Paid List</span></div></div>
+        <div onclick="toggleExpenseModal()"><div class="bg-red-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/2721/2721091.png" class="icon-img"><span class="btn-label" data-en="Expenses" data-bn="খরচের হিসাব">Expenses</span></div></div>
+        <div onclick="toggleNotepad()"><div class="bg-yellow-100 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/3209/3209250.png" class="icon-img"><span class="btn-label" data-en="Notes" data-bn="নোটপ্যাড">Notes</span></div></div>
+        <div id="radiusCard" onclick="window.open('https://paybill.radiusspot.com/admin=index/', '_blank')"><div class="bg-blue-50 cartoon-card mb-1"><img src="https://cdn-icons-png.flaticon.com/512/2111/2111463.png" class="icon-img"><span class="btn-label">Radius</span></div></div>
+    </div>
+
+    <!-- Serial Page Size Selector & Pagination Bar -->
+    <div id="paginationBar" class="px-4 mb-2">
+        <div class="bg-white border-4 border-black rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-black">
+            <div class="flex items-center gap-2">
+                <label id="labelPerPage" for="pageSizeSelect" class="font-black text-xs uppercase">Per Page:</label>
+                <select id="pageSizeSelect" onchange="handlePageSizeChange(this.value)" class="font-black text-xs bg-yellow-300 border-2 border-black rounded-xl px-2.5 py-1.5 outline-none text-black">
+                    <option value="10" data-en="10 Users" data-bn="১০ জন">10 Users</option>
+                    <option value="20" data-en="20 Users" data-bn="২০ জন">20 Users</option>
+                    <option value="50" data-en="50 Users" data-bn="৫০ জন">50 Users</option>
+                    <option value="100" data-en="100 Users" data-bn="১০০ জন">100 Users</option>
+                </select>
+            </div>
+            <div id="pageRangeInfo" class="font-black text-xs bg-pink-50 border-2 border-black rounded-xl px-2.5 py-1.5">
+                Serial: 0-0 / 0
+            </div>
+            <div class="flex items-center gap-2">
+                <button id="prevPageBtn" onclick="goPrevPage()" class="bg-gray-300 text-black border-2 border-black rounded-xl px-3 py-1.5 font-black text-xs uppercase">Prev</button>
+                <span id="pageIndicator" class="font-black text-xs px-1">1/1</span>
+                <button id="nextPageBtn" onclick="goNextPage()" class="dynamic-bg text-white border-2 border-black rounded-xl px-3 py-1.5 font-black text-xs uppercase" style="background-color: var(--primary-color); color: #fff;">Next</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Customer List Container -->
+    <div id="customerList" class="p-4 space-y-3 pb-6"></div>
+
+    <!-- Bottom Pagination Bar -->
+    <div id="bottomPaginationBar" class="px-4 pb-24">
+        <div class="bg-white border-3 border-black rounded-2xl p-3 flex items-center justify-between gap-2 text-black">
+            <button id="prevPageBtnBottom" onclick="goPrevPage()" class="flex-1 bg-gray-300 text-black border-2 border-black rounded-xl py-2 font-black text-xs uppercase">← Prev Page</button>
+            <span id="pageIndicatorBottom" class="font-black text-xs px-2 text-center">Page 1 / 1</span>
+            <button id="nextPageBtnBottom" onclick="goNextPage()" class="flex-1 dynamic-bg text-white border-2 border-black rounded-xl py-2 font-black text-xs uppercase" style="background-color: var(--primary-color); color: #fff;">Next Page →</button>
+        </div>
+    </div>
+</div>
+
+<!-- Create New Portal Modal -->
+<div id="createPortalModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[216] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-[35px] p-6 border-8 border-black">
+        <h3 id="createPortalTitle" class="text-xl font-black mb-2 dynamic-text underline italic uppercase">Create New Portal</h3>
+        <p id="createPortalDesc" class="text-xs font-bold mb-3 text-black">Add a new portal or ledger name:</p>
+        <input type="text" id="newPortalNameInput" placeholder="e.g. Portal 4 or Mr. Rafiq" class="input-box">
+        <label class="flex items-center justify-between py-2 px-1 font-bold text-xs cursor-pointer text-black">
+            <span id="createPortalLockLabel">Keep this portal locked?</span>
+            <input type="checkbox" id="newPortalLockedCheckbox" checked class="w-5 h-5 cursor-pointer">
+        </label>
+        <div class="flex gap-3 mt-2">
+            <button onclick="createNewPortal()" class="flex-1 dynamic-bg text-white p-3 cartoon-card font-black text-sm uppercase italic" style="background-color: var(--primary-color); color: #fff;">Create</button>
+            <button onclick="closeCreatePortalModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-sm uppercase">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- All Portals Status Summary Modal -->
+<div id="allPortalsSummaryModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[218] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[35px] p-6 border-8 border-black max-h-[85vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-3">
+            <h3 id="allPortalsModalTitle" class="text-xl font-black dynamic-text underline italic uppercase">All Portals Summary</h3>
+            <i class="fa fa-times-circle text-3xl cursor-pointer text-black" onclick="closeAllPortalsSummaryModal()"></i>
+        </div>
+        <div id="portalsGrandTotalBox" class="p-3 bg-yellow-200 border-2 border-black rounded-2xl mb-4 font-black text-xs text-black"></div>
+        <div id="portalsSummaryList" class="space-y-3"></div>
+    </div>
+</div>
+
+<!-- Rename Portal Modal -->
+<div id="renamePortalModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[215] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-[35px] p-6 border-8 border-black">
+        <h3 id="renamePortalTitle" class="text-xl font-black mb-2 dynamic-text underline italic uppercase">Rename Portal</h3>
+        <p id="renamePortalDesc" class="text-xs font-bold mb-3 text-black">Enter a name for this portal or area ledger:</p>
+        <input type="text" id="portalNameInput" placeholder="e.g. Main Portal or Mr. Karim" class="input-box">
+        <div class="flex gap-3">
+            <button onclick="savePortalName()" class="flex-1 dynamic-bg text-white p-3 cartoon-card font-black text-sm uppercase italic" style="background-color: var(--primary-color); color: #fff;">Save Name</button>
+            <button onclick="closeRenamePortalModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-sm uppercase">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Portal Lock PIN Modal -->
+<div id="portalPinModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[220] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-[35px] p-6 border-8 border-black">
+        <h3 id="portalPinTitle" class="text-xl font-black mb-2 dynamic-text underline italic uppercase">Portal Lock PIN</h3>
+        <p id="portalPinDesc" class="text-xs font-bold mb-3 text-black">Enter PIN to access this portal:</p>
+        <input type="password" id="portalPinInput" placeholder="Enter PIN" class="input-box">
+        <div class="flex gap-3">
+            <button onclick="verifyPortalPin()" class="flex-1 dynamic-bg text-white p-3 cartoon-card font-black text-sm uppercase italic" style="background-color: var(--primary-color); color: #fff;">Confirm</button>
+            <button onclick="closePortalPinModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-sm uppercase">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Details Modal -->
+<div id="detailsModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[170] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-6 border-8 border-black">
+        <div class="flex justify-between items-center mb-4">
+            <span class="bg-black text-white text-xs px-3 py-1 rounded-full font-black">CUSTOMER DETAILS</span>
+            <i class="fa fa-times-circle text-3xl cursor-pointer text-black" onclick="closeDetailsModal()"></i>
+        </div>
+
+        <h2 id="detailUsername" class="text-2xl font-black dynamic-text underline mb-1"></h2>
+        <h3 id="detailName" class="text-lg font-black text-gray-800 mb-3"></h3>
+
+        <div class="space-y-3 bg-gray-50 p-4 border-2 border-black rounded-2xl mb-4 font-bold text-sm text-black">
+            <p><strong>Phone:</strong> <span id="detailPhone"></span></p>
+            <p><strong>Address:</strong> <span id="detailAddress"></span></p>
+            <p><strong>Monthly Bill:</strong> <span id="detailBill" class="text-red-600 font-black"></span></p>
+            <p><strong>Status:</strong> <span id="detailStatus"></span></p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 mb-4">
+            <a id="btnCall" href="#" class="p-3 bg-blue-500 text-white rounded-xl border-2 border-black font-black text-center text-xs flex flex-col items-center justify-center"><i class="fa fa-phone text-lg mb-1"></i>CALL</a>
+            <a id="btnSMS" href="#" class="p-3 bg-yellow-500 text-black rounded-xl border-2 border-black font-black text-center text-xs flex flex-col items-center justify-center"><i class="fa fa-envelope text-lg mb-1"></i>SMS</a>
+            <button id="btnWA" onclick="" class="p-3 bg-green-500 text-white rounded-xl border-2 border-black font-black text-center text-xs flex flex-col items-center justify-center"><i class="fab fa-whatsapp text-lg mb-1"></i>WHATSAPP</button>
+        </div>
+
+        <div class="flex gap-2">
+            <button id="btnEditModal" onclick="" class="flex-1 bg-black text-white p-3 rounded-2xl font-black uppercase text-xs">Edit Info</button>
+            <button id="btnDeleteModal" onclick="" class="bg-red-600 text-white p-3 rounded-2xl font-black uppercase text-xs"><i class="fa fa-trash mr-1"></i>Delete</button>
+            <button onclick="closeDetailsModal()" class="bg-gray-300 text-black p-3 rounded-2xl font-black uppercase text-xs">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Import / File Upload Modal -->
+<div id="importModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[160] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-6 border-8 border-black">
+        <h3 class="text-xl font-black mb-2 dynamic-text underline italic uppercase">Upload / Import Client File</h3>
+        <p id="importDesc" class="text-xs font-bold mb-4 text-black">Select your Excel file (.xlsx / .xls / .csv) to import client records automatically:</p>
+
+        <input type="file" id="excelFileinput" accept=".xlsx, .xls, .csv" class="input-box bg-gray-100 !p-3 text-sm cursor-pointer mb-4 text-black">
+
+        <div class="flex gap-3">
+            <button onclick="handleExcelUpload()" class="flex-1 dynamic-bg text-white p-3 cartoon-card font-black text-lg italic uppercase" style="background-color: var(--primary-color); color: #fff;">Process & Import</button>
+            <button onclick="toggleImportModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-lg uppercase">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Expense Modal -->
+<div id="expenseModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[150] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-6 border-8 border-black">
+        <h3 class="text-2xl font-black mb-4 text-red-600 underline italic uppercase">Expense Tracker</h3>
+        <input type="text" id="expName" placeholder="Expense Title" class="input-box">
+        <input type="number" id="expAmount" placeholder="Amount (৳)" class="input-box">
+        <div class="flex gap-3 mb-4">
+            <button onclick="addExpense()" class="flex-1 bg-red-600 text-white p-3 cartoon-card font-black text-lg italic uppercase">Add Expense</button>
+            <button onclick="toggleExpenseModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-lg uppercase">Close</button>
+        </div>
+        <div id="expenseList" class="max-h-48 overflow-y-auto space-y-2"></div>
+    </div>
+</div>
+
+<!-- Settings Menu -->
+<div id="settingsMenu" class="hidden fixed inset-0 bg-black bg-opacity-70 z-50 flex items-end">
+    <div class="bg-white w-full rounded-t-[40px] p-8 border-t-8 border-black max-h-[95vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6"><h3 id="settingsTitle" class="font-black text-2xl italic underline dynamic-text">Admin Panel Settings</h3><i class="fa fa-times-circle text-4xl cursor-pointer text-black" onclick="toggleSettings()"></i></div>
+        <div class="space-y-5">
+            <div id="fiberCalcRow" onclick="requestFeatureUnlock('fiber', toggleCalculator)" class="p-4 bg-yellow-400 border-4 border-black rounded-3xl flex items-center justify-between cursor-pointer">
+                <div class="flex items-center gap-4"><img src="https://cdn-icons-png.flaticon.com/512/2344/2344132.png" class="w-10 h-10"><div><p class="font-black text-sm uppercase italic text-black">Fiber Tap Calculator <span id="fiberLockBadge" class="text-[10px] bg-black text-white px-2 py-0.5 rounded ml-1">LOCKED</span></p><p class="text-[10px] font-bold opacity-70 italic text-black">Visual DB Tools</p></div></div><i class="fa fa-calculator text-black text-xl"></i>
+            </div>
+
+            <div id="oltAccessBox" class="p-4 bg-emerald-50 border-4 border-black rounded-3xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <p class="font-black text-sm uppercase italic text-black">OLT Portal Access <span id="oltLockBadge" class="text-[10px] bg-black text-white px-2 py-0.5 rounded ml-1">LOCKED</span></p>
+                    <button onclick="requestFeatureUnlock('olt', openOLTPanel)" class="bg-black text-white text-xs px-3 py-1.5 rounded-xl font-black uppercase">Unlock OLT</button>
+                </div>
+                <div id="oltButtonsGrid" class="hidden grid grid-cols-2 gap-3 pt-1">
+                    <a href="http://103.112.239.49:1919/#/login" target="_blank" class="p-3 bg-teal-600 text-white cartoon-card font-black text-center text-xs uppercase italic">OLT Portal 1 (:1919)</a>
+                    <a href="http://103.112.239.49:1818/login.html#/login" target="_blank" class="p-3 bg-cyan-700 text-white cartoon-card font-black text-center text-xs uppercase italic">OLT Portal 2 (:1818)</a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <a href="https://paybill.radiusspot.com/admin=index/" target="_blank" class="p-4 bg-blue-600 text-white cartoon-card font-black text-center text-sm uppercase italic">Radius Admin</a>
+                <a href="https://admin.inextbit.net" target="_blank" class="p-4 bg-purple-600 text-white cartoon-card font-black text-center text-sm uppercase italic">Inextbit Admin</a>
+            </div>
+            <div class="p-4 bg-red-100 border-4 border-black rounded-2xl flex justify-between items-center">
+                <div><p id="clearAllTitle" class="font-black text-sm text-red-700">Clear All Clients Data</p><p id="clearAllSub" class="text-[10px] font-bold text-black">Remove all customers in current portal</p></div>
+                <button onclick="clearAllData()" class="bg-red-600 text-white px-4 py-2 font-black rounded-xl text-xs uppercase cartoon-card">Clear All</button>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="p-4 bg-gray-100 border-4 border-black rounded-2xl"><p class="font-black text-xs mb-2 text-black">LANGUAGE</p><button onclick="toggleLanguage()" class="w-full py-2 bg-white border-2 border-black rounded-xl font-black text-sm uppercase text-black" id="langBtn">Bangla</button></div>
+                <div id="fingerSettingCard" class="p-4 bg-gray-100 border-4 border-black rounded-2xl flex flex-col justify-between"><p class="font-black text-xs text-black">FINGERPRINT</p><label class="switch mt-1"><input type="checkbox" id="fingerprintToggle" onchange="toggleFingerprint(this.checked)"><span class="slider"></span></label></div>
+            </div>
+            <div class="p-5 bg-blue-50 border-4 border-black rounded-3xl"><p class="font-black mb-3 uppercase italic text-sm text-black">Update Password:</p><input type="password" id="newPassInput" placeholder="New Password" class="settings-input"><button onclick="updatePassword()" class="w-full bg-black text-white py-2 rounded-xl font-black uppercase text-xs">Change Now</button></div>
+            <div class="p-5 bg-pink-50 border-4 border-black rounded-3xl"><p class="font-black mb-3 uppercase italic text-sm text-black">Update Portal Lock PIN:</p><input type="password" id="newPortalPinInput" placeholder="New Portal Lock PIN" class="settings-input"><button onclick="updatePortalPin()" class="w-full bg-black text-white py-2 rounded-xl font-black uppercase text-xs">Update PIN</button></div>
+            <div id="themeSettingBox" class="p-5 bg-yellow-50 border-4 border-black rounded-3xl"><p class="font-black mb-3 uppercase italic text-sm text-black">App Theme:</p><div class="flex flex-wrap gap-3"><div onclick="updateTheme('#e2136e')" class="theme-box bg-[#e2136e]"></div><div onclick="updateTheme('#2563eb')" class="theme-box bg-[#2563eb]"></div><div onclick="updateTheme('#16a34a')" class="theme-box bg-[#16a34a]"></div><div onclick="updateTheme('#7c3aed')" class="theme-box bg-[#7c3aed]"></div><input type="color" onchange="updateTheme(this.value)" class="w-10 h-10 border-2 border-black rounded-lg cursor-pointer bg-white"></div></div>
+            <button onclick="logout()" class="w-full p-4 bg-red-600 text-white font-black cartoon-card uppercase italic">System Logout</button>
+        </div>
+    </div>
+</div>
+
+<!-- Feature Unlock Modal -->
+<div id="unlockModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[210] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-[35px] p-6 border-8 border-black">
+        <h3 id="unlockModalTitle" class="text-xl font-black mb-2 dynamic-text underline italic uppercase">Feature Unlock Code</h3>
+        <p id="unlockModalDesc" class="text-xs font-bold mb-4 text-black">Enter secret code to unlock this feature:</p>
+        <input type="hidden" id="unlockTargetFeature">
+        <input type="password" id="unlockCodeInput" placeholder="Enter Secret Code" class="input-box">
+        <div class="flex gap-3">
+            <button onclick="verifyUnlockCode()" class="flex-1 dynamic-bg text-white p-3 cartoon-card font-black text-sm uppercase italic" style="background-color: var(--primary-color); color: #fff;">Unlock</button>
+            <button onclick="closeUnlockModal()" class="bg-gray-300 text-black p-3 cartoon-card font-black text-sm uppercase">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Fiber Calculator Modal -->
+<div id="calcModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[200] flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-6 border-8 border-black overflow-y-auto max-h-[90vh]">
+        <h3 class="text-xl font-black mb-4 dynamic-text underline italic uppercase">Fiber Tap Visualizer</h3>
+        <div class="space-y-3">
+            <input type="text" id="calcIn" placeholder="Input Power (e.g. -13)" class="input-box !mb-0">
+            <input type="text" id="calcTar" placeholder="Target Power (e.g. -23)" class="input-box !mb-0">
+            <button onclick="calculateTap()" class="w-full dynamic-bg text-white p-3 cartoon-card font-black uppercase italic" style="background-color: var(--primary-color); color: #fff;">Generate Report</button>
+        </div>
+        <div id="calcResult" class="mt-8 hidden">
+            <h4 id="tapName" class="text-center font-black text-lg mb-4 bg-black text-white py-1 rounded-lg"></h4>
+            <div class="relative h-64 flex flex-col items-center">
+                <div class="flex justify-between w-full px-4 mb-2">
+                    <div class="flex flex-col items-center"><span class="text-[10px] font-black text-red-600">ONU PORT</span><div id="resDrop" class="calc-bubble border-red-600 text-red-600 min-w-[70px]"></div></div>
+                    <div class="flex flex-col items-center"><span class="text-[10px] font-black text-green-700">NEXT BOX</span><div id="resPass" class="calc-bubble border-green-700 text-green-700 min-w-[70px]"></div></div>
+                </div>
+                <div class="fiber-line"><div class="fiber-left"></div><div class="fiber-right"></div></div>
+                <div class="mt-4"><div id="resIn" class="calc-bubble border-blue-600 text-blue-600 min-w-[80px]"></div><span class="text-[10px] font-black block text-center mt-1 text-black">INPUT</span></div>
+            </div>
+        </div>
+        <button onclick="toggleCalculator()" class="w-full mt-4 bg-gray-200 text-black p-3 border-4 border-black rounded-2xl font-black uppercase">Close</button>
+    </div>
+</div>
+
+<!-- Notepad Modal -->
+<div id="notepadModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[150] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-8 border-8 border-black">
+        <h3 class="text-2xl font-black mb-4 dynamic-text underline italic uppercase">Notepad</h3>
+        <textarea id="notepadTextArea"></textarea>
+        <div class="flex gap-4 mt-4">
+            <button onclick="saveNote()" class="flex-1 dynamic-bg text-white p-4 cartoon-card font-black text-xl italic uppercase" style="background-color: var(--primary-color); color: #fff;">Save</button>
+            <button onclick="toggleNotepad()" class="bg-gray-300 text-black p-4 cartoon-card font-black text-xl uppercase">Close</button>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Modal -->
+<div id="payModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[110] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-8 border-8 border-black">
+        <h3 class="text-2xl font-black mb-6 dynamic-text underline italic uppercase">Submit Payment</h3>
+        <input type="hidden" id="payTargetId">
+        <input type="text" id="payMonthName" class="input-box" placeholder="e.g. November 2026">
+        <input type="number" id="payAmount" class="input-box" placeholder="Amount">
+        <div class="flex gap-4 mt-4">
+            <button onclick="confirmPayment()" class="flex-1 dynamic-bg text-white p-4 cartoon-card font-black text-xl italic uppercase" style="background-color: var(--primary-color); color: #fff;">Confirm</button>
+            <button onclick="document.getElementById('payModal').classList.add('hidden')" class="bg-gray-300 text-black p-4 cartoon-card font-black text-xl uppercase">Back</button>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Entry / Edit Modal -->
+<div id="billFormModal" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[100] flex items-center justify-center p-5">
+    <div class="bg-white w-full max-w-md rounded-[40px] p-8 border-8 border-black">
+        <h3 id="formTitle" class="text-2xl font-black mb-6 dynamic-text underline italic uppercase">Customer Entry</h3>
+        <input type="hidden" id="editOldId">
+        <input type="text" id="custId" placeholder="Customer Username" class="input-box">
+        <input type="text" id="custName" placeholder="Full Name" class="input-box">
+        <div class="relative"><span class="absolute left-4 top-3.5 font-black text-black">+880</span><input type="number" id="custPhone" placeholder="Phone Number" class="input-box pl-16"></div>
+        <input type="text" id="custAddress" placeholder="Customer Address" class="input-box">
+        <input type="number" id="custBill" placeholder="Monthly Fee" class="input-box">
+        <div class="flex gap-4 mt-4">
+            <button onclick="saveBill()" class="flex-1 dynamic-bg text-white p-4 cartoon-card font-black text-xl italic uppercase" style="background-color: var(--primary-color); color: #fff;">Save</button>
+            <button onclick="closeBillForm()" class="bg-gray-300 text-black p-4 cartoon-card font-black text-xl uppercase">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const APP_VERSION = "v10.0";
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbzYch8VVNS5X3YKsQWOMcy5GeyNupD85Lu23XH9euupKnnuifsZoqsena-hUCwDn0kD/exec';
+    const APP_OTP = "6285";
+    const FIBER_UNLOCK_CODE = "K981";
+    const OLT_UNLOCK_CODE = "H981";
+    const DEFAULT_PORTAL_PIN = "9810";
+    const START_ID = 10001;
+
+    function safeParseJSON(key, fallback) {
+        try {
+            const raw = localStorage.getItem(key);
+            return raw ? JSON.parse(raw) : fallback;
+        } catch (e) {
+            return fallback;
+        }
+    }
+
+    // IndexedDB Engine for v10.0 fast large-dataset persistence
+    const DB_NAME = 'NooriNetworkDB_v10';
+    const DB_STORE = 'AppState';
+    let idbInstance = null;
+
+    function openAppDB() {
+        return new Promise((resolve) => {
+            if (!('indexedDB' in window)) return resolve(null);
+            try {
+                const req = indexedDB.open(DB_NAME, 1);
+                req.onupgradeneeded = (ev) => {
+                    const db = ev.target.result;
+                    if (!db.objectStoreNames.contains(DB_STORE)) {
+                        db.createObjectStore(DB_STORE);
+                    }
+                };
+                req.onsuccess = (ev) => {
+                    idbInstance = ev.target.result;
+                    resolve(idbInstance);
+                };
+                req.onerror = () => resolve(null);
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    function idbSetState(key, value) {
+        if (!idbInstance) return;
+        try {
+            const tx = idbInstance.transaction(DB_STORE, 'readwrite');
+            tx.objectStore(DB_STORE).put(value, key);
+        } catch (e) {}
+    }
+
+    function idbGetState(key) {
+        return new Promise((resolve) => {
+            if (!idbInstance) return resolve(null);
+            try {
+                const tx = idbInstance.transaction(DB_STORE, 'readonly');
+                const req = tx.objectStore(DB_STORE).get(key);
+                req.onsuccess = () => resolve(req.result ?? null);
+                req.onerror = () => resolve(null);
+            } catch (e) {
+                resolve(null);
+            }
+        });
+    }
+
+    let userData = safeParseJSON('user_data', null);
+    let appSettings = safeParseJSON('app_settings', { lang: 'en', finger: true });
+    let featurePermissions = safeParseJSON('feature_permissions', {
+        fiberUnlocked: false,
+        oltUnlocked: false,
+        fingerEnabled: true,
+        themesEnabled: true
+    });
+    let pendingUnlockCallback = null;
+    let sessionActive = localStorage.getItem('session_active') === 'true';
+    let isEditing = false;
+
+    let portalLockPin = localStorage.getItem('portal_lock_pin') || DEFAULT_PORTAL_PIN;
+    let portalsStore = safeParseJSON('noori_portals_store', null);
+    let activePortalId = localStorage.getItem('active_portal_id') || 'portal_1';
+
+    if (!portalsStore) {
+        const legacyCustomers = safeParseJSON('local_customers', []);
+        const legacyExpenses = safeParseJSON('local_expenses', []);
+        portalsStore = {
+            portal_1: { id: 'portal_1', name: 'Portal 1 (Main)', locked: false, customers: legacyCustomers, expenses: legacyExpenses },
+            portal_2: { id: 'portal_2', name: 'Portal 2', locked: true, customers: [], expenses: [] },
+            portal_3: { id: 'portal_3', name: 'Portal 3', locked: true, customers: [], expenses: [] }
+        };
+        try { localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore)); } catch (e) {}
+    }
+
+    if (!portalsStore[activePortalId]) {
+        activePortalId = Object.keys(portalsStore)[0] || 'portal_1';
+    }
+
+    let allData = portalsStore[activePortalId].customers || [];
+    let expenses = portalsStore[activePortalId].expenses || [];
+    let pendingPortalSwitchId = null;
+    let portalPinActionMode = 'switch';
+
+    let pageSize = parseInt(localStorage.getItem('noori_page_size') || '10', 10);
+    if (![10, 20, 50, 100].includes(pageSize)) pageSize = 10;
+    let currentPage = 1;
+    let currentFilteredData = null;
+    let searchDebounceTimer = null;
+
+    function isBn() {
+        return appSettings.lang === 'bn';
+    }
+
+    function getActiveDataset() {
+        return currentFilteredData !== null ? currentFilteredData : allData;
+    }
+
+    function saveActivePortalData() {
+        if (!portalsStore[activePortalId]) return;
+        portalsStore[activePortalId].customers = allData;
+        portalsStore[activePortalId].expenses = expenses;
+        try {
+            localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+            localStorage.setItem('local_customers', JSON.stringify(allData));
+            localStorage.setItem('local_expenses', JSON.stringify(expenses));
+        } catch (e) {
+            alert(isBn() ? "স্টোরেজ পূর্ণ হয়ে গেছে!" : "Storage full! Please clear unused data.");
+        }
+        idbSetState('noori_portals_store', portalsStore);
+        idbSetState('local_customers', allData);
+        idbSetState('local_expenses', expenses);
+    }
+
+    function quickRefreshUI() {
+        renderPortalSwitcher();
+        updateStats();
+        renderList(getActiveDataset(), false);
+    }
+
+    function deleteCurrentPortal() {
+        if (activePortalId === 'portal_1') {
+            return alert(isBn() ? "মেইন পোর্টাল ডিলিট করা যাবে না!" : "Main portal cannot be deleted!");
+        }
+        const portalName = portalsStore[activePortalId]?.name || (isBn() ? "এই পোর্টাল" : "This portal");
+        const clientCount = (portalsStore[activePortalId]?.customers || []).length;
+        const msg = isBn()
+            ? `"${portalName}" এবং এর ${clientCount} জন কাস্টমারের হিসাব ডিলিট করতে চান?`
+            : `Delete "${portalName}" and its ${clientCount} customer records?`;
+        if (!confirm(msg)) return;
+
+        delete portalsStore[activePortalId];
+        localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+        idbSetState('noori_portals_store', portalsStore);
+
+        activePortalId = 'portal_1';
+        localStorage.setItem('active_portal_id', activePortalId);
+        allData = portalsStore[activePortalId].customers || [];
+        expenses = portalsStore[activePortalId].expenses || [];
+        currentFilteredData = null;
+        currentPage = 1;
+        localStorage.setItem('local_customers', JSON.stringify(allData));
+        localStorage.setItem('local_expenses', JSON.stringify(expenses));
+        idbSetState('local_customers', allData);
+        idbSetState('local_expenses', expenses);
+
+        renderPortalSwitcher();
+        updateStats();
+        renderList(allData, true);
+        renderExpenses();
+    }
+
+    function deleteCustomer(id) {
+        const target = allData.find(i => i.customerId === id);
+        if (!target) return;
+        const label = target.customerName ? `${target.customerId} (${target.customerName})` : target.customerId;
+        const msg = isBn() ? `"${label}" কাস্টমার ডিলিট করতে চান?` : `Delete customer "${label}"?`;
+        if (!confirm(msg)) return;
+
+        allData = allData.filter(i => i.customerId !== id);
+        if (currentFilteredData !== null) {
+            currentFilteredData = currentFilteredData.filter(i => i.customerId !== id);
+        }
+        saveActivePortalData();
+        renderPortalSwitcher();
+        updateStats();
+        renderList(getActiveDataset(), false);
+        closeDetailsModal();
+    }
+
+    function openCreatePortalModal() {
+        document.getElementById('newPortalNameInput').value = "";
+        document.getElementById('newPortalLockedCheckbox').checked = true;
+        document.getElementById('createPortalModal').classList.remove('hidden');
+    }
+
+    function closeCreatePortalModal() {
+        document.getElementById('createPortalModal').classList.add('hidden');
+    }
+
+    function createNewPortal() {
+        const nameVal = document.getElementById('newPortalNameInput').value.trim();
+        const isLockedVal = document.getElementById('newPortalLockedCheckbox').checked;
+        const nextNum = Object.keys(portalsStore).length + 1;
+        const newId = `portal_${Date.now()}`;
+        const finalName = nameVal || (isBn() ? `পোর্টাল ${nextNum}` : `Portal ${nextNum}`);
+
+        portalsStore[newId] = {
+            id: newId,
+            name: finalName,
+            locked: isLockedVal,
+            customers: [],
+            expenses: []
+        };
+        localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+        idbSetState('noori_portals_store', portalsStore);
+        closeCreatePortalModal();
+
+        if (isLockedVal) {
+            renderPortalSwitcher();
+            alert(isBn() ? `"${finalName}" তৈরি হয়েছে (লক অবস্থায়)।` : `"${finalName}" created (locked).`);
+        } else {
+            switchToPortal(newId);
+        }
+    }
+
+    function openAllPortalsSummaryModal() {
+        const listEl = document.getElementById('portalsSummaryList');
+        const grandBox = document.getElementById('portalsGrandTotalBox');
+        const frag = document.createDocumentFragment();
+
+        let grandClients = 0;
+        let grandPaidAmount = 0;
+        let grandDueCount = 0;
+
+        Object.keys(portalsStore).forEach(key => {
+            const p = portalsStore[key];
+            const custs = p.customers || [];
+            const paidCusts = custs.filter(c => c.status === 'Paid');
+            const dueCusts = custs.filter(c => c.status !== 'Paid');
+            const paidSum = paidCusts.reduce((sum, c) => sum + Number(c.paidAmount || 0), 0);
+
+            grandClients += custs.length;
+            grandPaidAmount += paidSum;
+            grandDueCount += dueCusts.length;
+
+            const card = document.createElement('div');
+            card.className = `p-3 border-2 border-black rounded-2xl ${p.id === activePortalId ? 'bg-pink-50' : 'bg-gray-50'} text-black`;
+            card.innerHTML = `
+                <div class="flex justify-between items-center mb-1">
+                    <span class="font-black text-sm">${p.locked ? '🔒 ' : '📒 '}${escapeHTML(p.name)}</span>
+                    <button onclick="closeAllPortalsSummaryModal(); handlePortalChange('${p.id}')" class="bg-black text-white text-[10px] px-2.5 py-1 rounded-lg font-black uppercase">${isBn() ? 'খুলুন' : 'Open'}</button>
+                </div>
+                <div class="grid grid-cols-3 gap-1 text-[11px] font-black mt-2">
+                    <div class="bg-cyan-200 border border-black rounded-lg p-1.5 text-center">${isBn() ? 'ক্লায়েন্ট' : 'Clients'}: ${custs.length}</div>
+                    <div class="bg-green-200 border border-black rounded-lg p-1.5 text-center">${isBn() ? 'কালেকশন' : 'Paid'}: ৳${paidSum.toLocaleString()}</div>
+                    <div class="bg-orange-200 border border-black rounded-lg p-1.5 text-center">${isBn() ? 'বাকি' : 'Due'}: ${dueCusts.length}</div>
+                </div>
+            `;
+            frag.appendChild(card);
+        });
+
+        listEl.innerHTML = "";
+        listEl.appendChild(frag);
+        grandBox.innerHTML = isBn()
+            ? `মোট: ক্লায়েন্ট ${grandClients} জন | কালেকশন ৳${grandPaidAmount.toLocaleString()} | বাকি ${grandDueCount} জন`
+            : `Total: ${grandClients} Clients | Paid ৳${grandPaidAmount.toLocaleString()} | Due ${grandDueCount}`;
+        document.getElementById('allPortalsSummaryModal').classList.remove('hidden');
+    }
+
+    function closeAllPortalsSummaryModal() {
+        document.getElementById('allPortalsSummaryModal').classList.add('hidden');
+    }
+
+    function renderPortalSwitcher() {
+        const select = document.getElementById('portalSelect');
+        if (!select) return;
+        const frag = document.createDocumentFragment();
+        Object.keys(portalsStore).forEach(key => {
+            const p = portalsStore[key];
+            const lockIcon = p.locked ? "🔒 " : "📒 ";
+            const opt = document.createElement('option');
+            opt.value = p.id;
+            opt.textContent = `${lockIcon}${p.name} (${(p.customers || []).length})`;
+            if (p.id === activePortalId) opt.selected = true;
+            frag.appendChild(opt);
+        });
+        select.innerHTML = "";
+        select.appendChild(frag);
+
+        const lockBtn = document.getElementById('portalLockToggleBtn');
+        if (lockBtn && portalsStore[activePortalId]) {
+            const curLocked = !!portalsStore[activePortalId].locked;
+            const labelText = curLocked ? (isBn() ? 'লকড' : 'Locked') : (isBn() ? 'খোলা' : 'Unlocked');
+            lockBtn.innerHTML = `<i class="fa ${curLocked ? 'fa-lock' : 'fa-lock-open'} mr-1"></i><span>${labelText}</span>`;
+            lockBtn.className = curLocked
+                ? "bg-red-600 text-white border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase"
+                : "bg-green-600 text-white border-2 border-black rounded-xl px-3 py-2 font-black text-xs uppercase";
+        }
+    }
+
+    function handlePortalChange(targetId) {
+        if (targetId === activePortalId) return;
+        const targetPortal = portalsStore[targetId];
+        if (!targetPortal) return;
+
+        if (targetPortal.locked) {
+            pendingPortalSwitchId = targetId;
+            portalPinActionMode = 'switch';
+            document.getElementById('portalPinTitle').innerText = isBn() ? `"${targetPortal.name}" লক করা আছে` : `"${targetPortal.name}" is Locked`;
+            document.getElementById('portalPinDesc').innerText = isBn() ? "এই পোর্টালের হিসাব দেখতে পিন দিন:" : "Enter PIN to view this portal:";
+            document.getElementById('portalPinInput').value = "";
+            document.getElementById('portalPinModal').classList.remove('hidden');
+            renderPortalSwitcher();
+        } else {
+            switchToPortal(targetId);
+        }
+    }
+
+    function switchToPortal(targetId) {
+        saveActivePortalData();
+        activePortalId = targetId;
+        localStorage.setItem('active_portal_id', activePortalId);
+        idbSetState('active_portal_id', activePortalId);
+        allData = portalsStore[activePortalId].customers || [];
+        expenses = portalsStore[activePortalId].expenses || [];
+        currentFilteredData = null;
+        currentPage = 1;
+        document.getElementById('searchInput').value = "";
+        localStorage.setItem('local_customers', JSON.stringify(allData));
+        localStorage.setItem('local_expenses', JSON.stringify(expenses));
+        idbSetState('local_customers', allData);
+        idbSetState('local_expenses', expenses);
+        renderPortalSwitcher();
+        updateStats();
+        renderList(allData, true);
+        renderExpenses();
+    }
+
+    function togglePortalLockStatus() {
+        const curPortal = portalsStore[activePortalId];
+        if (!curPortal) return;
+        portalPinActionMode = 'toggleLock';
+        pendingPortalSwitchId = activePortalId;
+        document.getElementById('portalPinTitle').innerText = isBn()
+            ? (curPortal.locked ? "পোর্টাল আনলক করুন" : "পোর্টাল লক করুন")
+            : (curPortal.locked ? "Unlock Portal" : "Lock Portal");
+        document.getElementById('portalPinDesc').innerText = isBn() ? "লক অবস্থা পরিবর্তন করতে পিন দিন:" : "Enter PIN to change lock status:";
+        document.getElementById('portalPinInput').value = "";
+        document.getElementById('portalPinModal').classList.remove('hidden');
+    }
+
+    function verifyPortalPin() {
+        const enteredPin = document.getElementById('portalPinInput').value.trim();
+        if (enteredPin !== portalLockPin) {
+            return alert(isBn() ? "ভুল পিন কোড!" : "Wrong PIN!");
+        }
+
+        if (portalPinActionMode === 'switch' && pendingPortalSwitchId) {
+            const dest = pendingPortalSwitchId;
+            closePortalPinModal();
+            switchToPortal(dest);
+        } else if (portalPinActionMode === 'toggleLock' && pendingPortalSwitchId) {
+            portalsStore[pendingPortalSwitchId].locked = !portalsStore[pendingPortalSwitchId].locked;
+            localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+            idbSetState('noori_portals_store', portalsStore);
+            closePortalPinModal();
+            renderPortalSwitcher();
+        }
+    }
+
+    function closePortalPinModal() {
+        pendingPortalSwitchId = null;
+        document.getElementById('portalPinModal').classList.add('hidden');
+        renderPortalSwitcher();
+    }
+
+    function openRenamePortalModal() {
+        document.getElementById('portalNameInput').value = portalsStore[activePortalId].name || "";
+        document.getElementById('renamePortalModal').classList.remove('hidden');
+    }
+
+    function closeRenamePortalModal() {
+        document.getElementById('renamePortalModal').classList.add('hidden');
+    }
+
+    function savePortalName() {
+        const newName = document.getElementById('portalNameInput').value.trim();
+        if (!newName) return alert(isBn() ? "পোর্টালের নাম লিখুন!" : "Please enter a portal name!");
+        portalsStore[activePortalId].name = newName;
+        localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+        idbSetState('noori_portals_store', portalsStore);
+        renderPortalSwitcher();
+        closeRenamePortalModal();
+    }
+
+    function updatePortalPin() {
+        const pin = document.getElementById('newPortalPinInput').value.trim();
+        if (pin.length < 4) return alert(isBn() ? "কমপক্ষে ৪ ডিজিটের পিন দিন!" : "PIN must be at least 4 characters!");
+        portalLockPin = pin;
+        localStorage.setItem('portal_lock_pin', portalLockPin);
+        idbSetState('portal_lock_pin', portalLockPin);
+        document.getElementById('newPortalPinInput').value = "";
+        alert(isBn() ? "পিন আপডেট হয়েছে!" : "Portal PIN updated!");
+    }
+
+    function escapeHTML(str) {
+        return String(str || '').replace(/[&<>"']/g, m => ({
+            '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+        }[m]));
+    }
+
+    async function hydrateFromIDBIfNeeded() {
+        const db = await openAppDB();
+        if (!db) return;
+        if (!portalsStore) {
+            const savedStore = await idbGetState('noori_portals_store');
+            if (savedStore && typeof savedStore === 'object') {
+                portalsStore = savedStore;
+                activePortalId = (await idbGetState('active_portal_id')) || Object.keys(portalsStore)[0] || 'portal_1';
+                allData = portalsStore[activePortalId]?.customers || [];
+                expenses = portalsStore[activePortalId]?.expenses || [];
+                localStorage.setItem('noori_portals_store', JSON.stringify(portalsStore));
+            }
+        } else {
+            idbSetState('noori_portals_store', portalsStore);
+            idbSetState('active_portal_id', activePortalId);
+        }
+    }
+
+    function registerServiceWorkerSafely() {
+        if (!('serviceWorker' in navigator)) return;
+        const isSupportedProtocol = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+        if (!isSupportedProtocol) return;
+        try {
+            const swCode = `
+                const CACHE_NAME = 'noori-manager-v10';
+                self.addEventListener('install', (e) => { self.skipWaiting(); });
+                self.addEventListener('activate', (e) => { e.waitUntil(self.clients.claim()); });
+                self.addEventListener('fetch', (e) => {
+                    if (e.request.method !== 'GET') return;
+                    e.respondWith(
+                        caches.match(e.request).then((cached) => cached || fetch(e.request).then((res) => {
+                            if (res && res.status === 200 && res.type === 'basic') {
+                                const copy = res.clone();
+                                caches.open(CACHE_NAME).then((c) => c.put(e.request, copy));
+                            }
+                            return res;
+                        }).catch(() => cached))
+                    );
+                });
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            const swUrl = URL.createObjectURL(blob);
+            navigator.serviceWorker.register(swUrl).catch(() => {});
+        } catch (e) {}
+    }
+
+    window.onload = async function() {
+        await hydrateFromIDBIfNeeded();
+        registerServiceWorkerSafely();
+
+        startClock();
+        updateTheme(localStorage.getItem('theme_color') || '#e2136e');
+        document.getElementById('fingerprintToggle').checked = appSettings.finger;
+        document.getElementById('pageSizeSelect').value = String(pageSize);
+        applyLanguage(appSettings.lang || 'en');
+        applyFeaturePermissions();
+        renderPortalSwitcher();
+
+        if (userData) {
+            if (sessionActive) goToDashboard();
+            else showLogin();
+        } else {
+            document.getElementById('registerPage').classList.remove('hidden');
+        }
+
+        updateStats();
+        renderList(allData, true);
+        renderExpenses();
+        document.getElementById('notepadTextArea').value = localStorage.getItem('user_notepad_data') || "";
+    };
+
+    function handleRegisterCheckboxChange(featureKey, checkboxEl) {
+        if (checkboxEl.checked) {
+            checkboxEl.checked = false;
+            requestFeatureUnlock(featureKey, () => {
+                checkboxEl.checked = true;
+            });
+        }
+    }
+
+    function applyFeaturePermissions() {
+        const fiberBadge = document.getElementById('fiberLockBadge');
+        const oltBadge = document.getElementById('oltLockBadge');
+        const oltButtonsGrid = document.getElementById('oltButtonsGrid');
+        const fingerCard = document.getElementById('fingerSettingCard');
+        const bioBtn = document.getElementById('bioLoginBtn');
+        const themeBox = document.getElementById('themeSettingBox');
+
+        if (fiberBadge) {
+            fiberBadge.innerText = featurePermissions.fiberUnlocked ? "UNLOCKED" : "LOCKED";
+            fiberBadge.className = featurePermissions.fiberUnlocked
+                ? "text-[10px] bg-green-700 text-white px-2 py-0.5 rounded ml-1"
+                : "text-[10px] bg-black text-white px-2 py-0.5 rounded ml-1";
+        }
+
+        if (oltBadge && oltButtonsGrid) {
+            if (featurePermissions.oltUnlocked) {
+                oltBadge.innerText = "UNLOCKED";
+                oltBadge.className = "text-[10px] bg-green-700 text-white px-2 py-0.5 rounded ml-1";
+                oltButtonsGrid.classList.remove('hidden');
+            } else {
+                oltBadge.innerText = "LOCKED";
+                oltBadge.className = "text-[10px] bg-black text-white px-2 py-0.5 rounded ml-1";
+                oltButtonsGrid.classList.add('hidden');
+            }
+        }
+
+        if (fingerCard) fingerCard.style.display = featurePermissions.fingerEnabled ? 'flex' : 'none';
+        if (bioBtn) bioBtn.style.display = (featurePermissions.fingerEnabled && appSettings.finger) ? 'flex' : 'none';
+        if (themeBox) themeBox.style.display = featurePermissions.themesEnabled ? 'block' : 'none';
+    }
+
+    function requestFeatureUnlock(featureKey, onSuccess) {
+        if (featureKey === 'fiber' && featurePermissions.fiberUnlocked) {
+            if (onSuccess) onSuccess();
+            return;
+        }
+        if (featureKey === 'olt' && featurePermissions.oltUnlocked) {
+            if (onSuccess) onSuccess();
+            return;
+        }
+
+        pendingUnlockCallback = onSuccess || null;
+        document.getElementById('unlockTargetFeature').value = featureKey;
+        document.getElementById('unlockCodeInput').value = "";
+        document.getElementById('unlockModalTitle').innerText = featureKey === 'fiber' ? "Fiber Calculator Unlock" : "OLT Portal Unlock";
+        document.getElementById('unlockModalDesc').innerText = isBn()
+            ? "এই অপশনটি চালু করতে সঠিক সিক্রেট কোড দিন:"
+            : "Enter secret code to unlock this feature:";
+        document.getElementById('unlockModal').classList.remove('hidden');
+    }
+
+    function closeUnlockModal() {
+        pendingUnlockCallback = null;
+        document.getElementById('unlockModal').classList.add('hidden');
+    }
+
+    function verifyUnlockCode() {
+        const featureKey = document.getElementById('unlockTargetFeature').value;
+        const entered = document.getElementById('unlockCodeInput').value.trim();
+
+        if (featureKey === 'fiber') {
+            if (entered !== FIBER_UNLOCK_CODE) return alert(isBn() ? "ভুল সিক্রেট কোড!" : "Invalid Secret Code!");
+            featurePermissions.fiberUnlocked = true;
+        } else if (featureKey === 'olt') {
+            if (entered !== OLT_UNLOCK_CODE) return alert(isBn() ? "ভুল সিক্রেট কোড!" : "Invalid Secret Code!");
+            featurePermissions.oltUnlocked = true;
+        }
+
+        localStorage.setItem('feature_permissions', JSON.stringify(featurePermissions));
+        idbSetState('feature_permissions', featurePermissions);
+        applyFeaturePermissions();
+        const cb = pendingUnlockCallback;
+        closeUnlockModal();
+        if (cb) cb();
+    }
+
+    function openOLTPanel() {
+        document.getElementById('oltButtonsGrid').classList.remove('hidden');
+    }
+
+    function toggleImportModal() { document.getElementById('importModal').classList.toggle('hidden'); }
+
+    function handleExcelUpload() {
+        if (typeof XLSX === 'undefined') {
+            return alert(isBn() ? "এক্সেল রিডার লোড হয়নি।" : "Excel reader library not loaded.");
+        }
+        const fileInput = document.getElementById('excelFileinput');
+        if (fileInput.files.length === 0) return alert(isBn() ? "এক্সেল ফাইল সিলেক্ট করুন!" : "Please select an Excel file!");
+
+        const file = fileInput.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const jsonRows = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                const existingIds = new Set(allData.map(item => item.customerId));
+                let addedCount = 0;
+
+                jsonRows.forEach((row, idx) => {
+                    if (idx === 0) return;
+
+                    let username = row[0] ? String(row[0]).split('Online')[0].split('Offline')[0].trim() : '';
+                    let bnName = row[1] ? String(row[1]).trim() : '';
+                    let nameCol = row[2] ? String(row[2]).trim() : '';
+                    let packageCol = row[3] ? String(row[3]).trim() : '';
+                    let addressCol = row[8] ? String(row[8]).trim() : (row[6] ? String(row[6]).trim() : '');
+
+                    if (!username && !nameCol) return;
+
+                    let phoneMatch = (nameCol + " " + username).match(/01\d{9}/);
+                    let phone = phoneMatch ? phoneMatch[0].replace(/^01/, '1') : '';
+                    let cleanName = nameCol.replace(/01\d{9}/, '').trim() || username;
+
+                    let billMatch = packageCol.match(/Monthly Bill:\s*(\d+)/i);
+                    let bill = billMatch ? billMatch[1] : '500';
+
+                    let customerId = username || generateNextId();
+
+                    if (!existingIds.has(customerId)) {
+                        existingIds.add(customerId);
+                        allData.push({
+                            customerId: customerId,
+                            customerName: bnName ? `${bnName} (${cleanName})` : cleanName,
+                            phone: phone,
+                            address: addressCol !== 'nan' && addressCol ? addressCol : 'N/A',
+                            amount: bill,
+                            status: 'Due',
+                            paidMonth: '',
+                            paidAmount: 0
+                        });
+                        addedCount++;
+                    }
+                });
+
+                currentFilteredData = null;
+                currentPage = 1;
+                saveActivePortalData();
+                renderPortalSwitcher();
+                updateStats();
+                renderList(allData, true);
+                toggleImportModal();
+                alert(isBn() ? `${addedCount} জন কাস্টমার ইম্পোর্ট হয়েছে!` : `${addedCount} customers imported!`);
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        };
+
+        reader.readAsArrayBuffer(file);
+    }
+
+    function handlePageSizeChange(newSize) {
+        const parsed = parseInt(newSize, 10);
+        pageSize = [10, 20, 50, 100].includes(parsed) ? parsed : 10;
+        localStorage.setItem('noori_page_size', String(pageSize));
+        idbSetState('noori_page_size', pageSize);
+        currentPage = 1;
+        renderList(getActiveDataset(), true);
+    }
+
+    function goNextPage() {
+        const list = getActiveDataset();
+        const totalPages = Math.max(1, Math.ceil(list.length / pageSize));
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderList(list, true);
+        }
+    }
+
+    function goPrevPage() {
+        if (currentPage > 1) {
+            currentPage--;
+            renderList(getActiveDataset(), true);
+        }
+    }
+
+    function updatePaginationUI(totalItems, startIdx, endIdx) {
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const rangeEl = document.getElementById('pageRangeInfo');
+        const indTop = document.getElementById('pageIndicator');
+        const indBot = document.getElementById('pageIndicatorBottom');
+        const prevTop = document.getElementById('prevPageBtn');
+        const nextTop = document.getElementById('nextPageBtn');
+        const prevBot = document.getElementById('prevPageBtnBottom');
+        const nextBot = document.getElementById('nextPageBtnBottom');
+
+        if (totalItems === 0) {
+            rangeEl.textContent = isBn() ? `সিরিয়াল: 0-0 / 0` : `Serial: 0-0 / 0`;
+        } else {
+            rangeEl.textContent = isBn()
+                ? `সিরিয়াল: ${startIdx + 1}-${endIdx} / ${totalItems}`
+                : `Serial: ${startIdx + 1}-${endIdx} / ${totalItems}`;
+        }
+
+        indTop.textContent = `${currentPage}/${totalPages}`;
+        indBot.textContent = isBn() ? `পেজ ${currentPage} / ${totalPages}` : `Page ${currentPage} / ${totalPages}`;
+        prevBot.textContent = isBn() ? `← আগের পেজ` : `← Prev Page`;
+        nextBot.textContent = isBn() ? `পরের পেজ →` : `Next Page →`;
+
+        const atFirst = currentPage <= 1;
+        const atLast = currentPage >= totalPages;
+
+        prevTop.disabled = atFirst;
+        prevBot.disabled = atFirst;
+        nextTop.disabled = atLast;
+        nextBot.disabled = atLast;
+
+        prevTop.style.opacity = atFirst ? '0.45' : '1';
+        prevBot.style.opacity = atFirst ? '0.45' : '1';
+        nextTop.style.opacity = atLast ? '0.45' : '1';
+        nextBot.style.opacity = atLast ? '0.45' : '1';
+    }
+
+    function renderList(data, resetToFirstPage = false) {
+        if (resetToFirstPage) currentPage = 1;
+
+        const listEl = document.getElementById('customerList');
+        const totalItems = data.length;
+        const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        const startIdx = totalItems === 0 ? 0 : (currentPage - 1) * pageSize;
+        const endIdx = totalItems === 0 ? 0 : Math.min(startIdx + pageSize, totalItems);
+        const pageSlice = data.slice(startIdx, endIdx);
+
+        updatePaginationUI(totalItems, startIdx, endIdx);
+
+        if (totalItems === 0) {
+            const emptyMsg = isBn()
+                ? `কোনো কাস্টমার পাওয়া যায়নি। 'ফাইল আপলোড' বা 'অ্যাড ইউজার' ব্যবহার করুন।`
+                : `No customers found. Click 'Upload File' or 'Add User' to add records.`;
+            listEl.innerHTML = `<div class="text-center p-8 font-black text-gray-600 bg-white border-2 border-black rounded-2xl">${emptyMsg}</div>`;
+            return;
+        }
+
+        const frag = document.createDocumentFragment();
+
+        pageSlice.forEach((item, idxInPage) => {
+            const serialNo = startIdx + idxInPage + 1;
+            const isPaid = item.status === 'Paid';
+            const card = document.createElement('div');
+            card.className = `p-4 border-4 border-black rounded-[22px] ${isPaid ? 'bg-green-100' : 'bg-white'} flex justify-between items-center text-black`;
+            card.style.boxShadow = '3px 3px 0px #000';
+
+            const infoDiv = document.createElement('div');
+            infoDiv.className = 'flex-1 cursor-pointer pr-2';
+            infoDiv.onclick = () => showCustomerDetails(item.customerId);
+            infoDiv.innerHTML = `
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="bg-black text-white text-xs font-black px-2.5 py-0.5 rounded-lg">#${serialNo}</span>
+                    <h3 class="font-black text-lg dynamic-text leading-tight">${escapeHTML(item.customerId)}</h3>
+                </div>
+                <p class="text-xs font-black text-gray-800">${escapeHTML(item.customerName || 'N/A')}</p>
+                <p class="text-sm font-black text-black mt-1">${isBn() ? 'বিল' : 'Bill'}: ৳ ${escapeHTML(item.amount)}</p>
+            `;
+
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'flex gap-2 items-center';
+
+            if (!isPaid) {
+                const payBtn = document.createElement('button');
+                payBtn.className = 'bg-yellow-400 text-black p-2.5 px-4 border-2 border-black rounded-xl font-black text-xs uppercase italic cursor-pointer';
+                payBtn.textContent = isBn() ? 'পেই' : 'Pay';
+                payBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    openPayModal(item.customerId, item.amount);
+                };
+                actionDiv.appendChild(payBtn);
+            } else {
+                const paidBadge = document.createElement('span');
+                paidBadge.className = 'bg-green-600 text-white text-xs font-black px-3 py-1.5 rounded-xl border-2 border-black';
+                paidBadge.textContent = isBn() ? 'পেইড ✓' : 'PAID ✓';
+                actionDiv.appendChild(paidBadge);
+            }
+
+            card.appendChild(infoDiv);
+            card.appendChild(actionDiv);
+            frag.appendChild(card);
+        });
+
+        listEl.innerHTML = "";
+        listEl.appendChild(frag);
+    }
+
+    function showCustomerDetails(id) {
+        const item = allData.find(i => i.customerId === id);
+        if (!item) return;
+
+        document.getElementById('detailUsername').innerText = item.customerId;
+        document.getElementById('detailName').innerText = item.customerName || 'N/A';
+        document.getElementById('detailPhone').innerText = item.phone ? `+880${item.phone}` : 'N/A';
+        document.getElementById('detailAddress').innerText = item.address || 'N/A';
+        document.getElementById('detailBill').innerText = `৳ ${item.amount}`;
+        document.getElementById('detailStatus').innerText = item.status === 'Paid'
+            ? (isBn() ? 'পেইড' : 'Paid')
+            : (isBn() ? 'বাকি' : 'Due');
+
+        if (item.phone) {
+            document.getElementById('btnCall').href = `tel:+880${item.phone}`;
+            document.getElementById('btnSMS').href = `sms:+880${item.phone}`;
+            document.getElementById('btnWA').onclick = () => sendWhatsApp(item.phone, item.customerName, item.amount);
+        } else {
+            document.getElementById('btnCall').href = "#";
+            document.getElementById('btnSMS').href = "#";
+            document.getElementById('btnWA').onclick = () => alert(isBn() ? "মোবাইল নম্বর নেই!" : "Phone number missing!");
+        }
+
+        document.getElementById('btnEditModal').onclick = () => { closeDetailsModal(); editCustomer(item.customerId); };
+        document.getElementById('btnDeleteModal').onclick = () => deleteCustomer(item.customerId);
+
+        document.getElementById('detailsModal').classList.remove('hidden');
+    }
+
+    function closeDetailsModal() { document.getElementById('detailsModal').classList.add('hidden'); }
+
+    function handleDebouncedSearch(q) {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            handleSearch(q);
+        }, 90);
+    }
+
+    function handleSearch(q) {
+        const query = q.toLowerCase().trim();
+        if (!query) {
+            currentFilteredData = null;
+            renderList(allData, true);
+            return;
+        }
+        currentFilteredData = allData.filter(i =>
+            String(i.customerId || '').toLowerCase().includes(query) ||
+            String(i.customerName || '').toLowerCase().includes(query) ||
+            String(i.phone || '').includes(query) ||
+            String(i.address || '').toLowerCase().includes(query)
+        );
+        renderList(currentFilteredData, true);
+    }
+
+    function clearAllData() {
+        const msg = isBn() ? "এই পোর্টালের সব কাস্টমার ডেটা ডিলিট করতে চান?" : "Clear all customer data in this portal?";
+        if (confirm(msg)) {
+            allData = [];
+            currentFilteredData = null;
+            currentPage = 1;
+            saveActivePortalData();
+            renderPortalSwitcher();
+            updateStats();
+            renderList(allData, true);
+        }
+    }
+
+    function toggleExpenseModal() { document.getElementById('expenseModal').classList.toggle('hidden'); }
+
+    function addExpense() {
+        const name = document.getElementById('expName').value.trim();
+        const amt = document.getElementById('expAmount').value.trim();
+        if (!name || !amt) return alert(isBn() ? "সব তথ্য দিন!" : "Please enter all fields!");
+        expenses.push({ name: name, amount: Number(amt), date: new Date().toLocaleDateString() });
+        saveActivePortalData();
+        document.getElementById('expName').value = "";
+        document.getElementById('expAmount').value = "";
+        renderExpenses();
+    }
+
+    function renderExpenses() {
+        const list = document.getElementById('expenseList');
+        const frag = document.createDocumentFragment();
+        expenses.forEach((item) => {
+            const row = document.createElement('div');
+            row.className = 'flex justify-between items-center bg-red-50 p-3 rounded-xl border-2 border-black text-black';
+            row.innerHTML = `<span class="font-bold text-sm">${escapeHTML(item.name)} (${escapeHTML(item.date)})</span><span class="font-black text-red-600">৳ ${Number(item.amount).toLocaleString()}</span>`;
+            frag.appendChild(row);
+        });
+        list.innerHTML = "";
+        list.appendChild(frag);
+    }
+
+    function sendWhatsApp(phone, name, amount) {
+        if (!phone) return alert(isBn() ? "মোবাইল নম্বর নেই!" : "Phone number missing!");
+        const msg = `Dear ${name}, your monthly bill from Noori Cable Network is ৳${amount}. Please pay on time. Thank you.`;
+        window.open(`https://wa.me/880${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    function toggleCalculator() { document.getElementById('calcModal').classList.toggle('hidden'); }
+
+    function calculateTap() {
+        let cur = parseFloat(document.getElementById('calcIn').value.replace(/[^-0-9.]/g, ''));
+        let tar = parseFloat(document.getElementById('calcTar').value.replace(/[^-0-9.]/g, ''));
+        if (isNaN(cur) || isNaN(tar)) return alert(isBn() ? "সঠিক সংখ্যা দিন!" : "Enter valid numbers!");
+        if (cur > 0) cur = -cur;
+        if (tar > 0) tar = -tar;
+
+        let diff = Math.abs(cur - tar);
+        let tap = "1/99", dL = 20.5, pL = 0.2;
+
+        if (diff <= 3.8) { tap = "50/50"; dL = 3.5; pL = 3.5; }
+        else if (diff <= 5.8) { tap = "30/70"; dL = 5.6; pL = 1.9; }
+        else if (diff <= 7.8) { tap = "20/80"; dL = 7.4; pL = 1.2; }
+        else if (diff <= 11.5) { tap = "10/90"; dL = 10.6; pL = 0.7; }
+        else if (diff <= 14.5) { tap = "5/95"; dL = 13.8; pL = 0.4; }
+
+        document.getElementById('calcResult').classList.remove('hidden');
+        document.getElementById('tapName').innerText = tap + " TAP SELECTED";
+        document.getElementById('resIn').innerText = cur.toFixed(1) + " dB";
+        document.getElementById('resDrop').innerText = (cur - dL).toFixed(1) + " dB";
+        document.getElementById('resPass').innerText = (cur - pL).toFixed(1) + " dB";
+    }
+
+    function generateNextId() {
+        if (allData.length === 0) return START_ID.toString();
+        const numericIds = allData.map(item => parseInt(item.customerId, 10)).filter(id => !isNaN(id));
+        const maxId = numericIds.length > 0 ? Math.max(...numericIds) : START_ID - 1;
+        return (maxId + 1).toString();
+    }
+
+    function syncDataToCloud() {
+        if (allData.length === 0) return alert(isBn() ? "কোনো ডাটা নেই!" : "No data to backup!");
+        if (!navigator.onLine) {
+            return alert(isBn() ? "ইন্টারনেট সংযোগ নেই। ডাটা লোকালি ও IndexedDB-তে সেভ আছে।" : "No internet connection. Your data is safely saved locally and in IndexedDB.");
+        }
+        alert(isBn() ? "ব্যাকআপ শুরু হচ্ছে..." : "Starting backup...");
+        fetch(scriptURL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ version: APP_VERSION, admin: userData?.email || 'admin', portal: portalsStore[activePortalId].name, customers: allData })
+        }).then(() => alert(isBn() ? "ব্যাকআপ সম্পন্ন হয়েছে!" : "Backup completed!")).catch(e => alert("Error: " + e));
+    }
+
+    function startClock() {
+        setInterval(() => {
+            const now = new Date();
+            let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+            let ampm = h >= 12 ? 'PM' : 'AM';
+            h = h % 12 || 12;
+            h = h < 10 ? '0' + h : h;
+            m = m < 10 ? '0' + m : m;
+            s = s < 10 ? '0' + s : s;
+            document.getElementById('liveClock').innerText = `${h}:${m}:${s} ${ampm}`;
+        }, 1000);
+    }
+
+    function showTotalClients() {
+        currentFilteredData = null;
+        document.getElementById('searchInput').value = "";
+        renderList(allData, true);
+        document.getElementById('paginationBar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function handleLogin() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const pass = document.getElementById('loginPass').value;
+        if (userData && email === userData.email && pass === userData.pass) {
+            localStorage.setItem('session_active', 'true');
+            goToDashboard();
+        } else alert(isBn() ? "ভুল তথ্য!" : "Invalid credentials!");
+    }
+
+    function handleBiometricAuth() {
+        if (!featurePermissions.fingerEnabled) return alert("Fingerprint disabled.");
+        if (confirm("Unlock via Biometric?")) {
+            localStorage.setItem('session_active', 'true');
+            goToDashboard();
+        }
+    }
+
+    function logout() {
+        if (confirm(isBn() ? "লগআউট করবেন?" : "Logout now?")) {
+            localStorage.removeItem('session_active');
+            location.reload();
+        }
+    }
+
+    function openBillForm() {
+        isEditing = false;
+        document.getElementById('formTitle').innerText = isBn() ? "নতুন কাস্টমার" : "Customer Entry";
+        document.getElementById('editOldId').value = "";
+        document.getElementById('custId').value = generateNextId();
+        document.getElementById('custName').value = "";
+        document.getElementById('custPhone').value = "";
+        document.getElementById('custAddress').value = "";
+        document.getElementById('custBill').value = "";
+        document.getElementById('billFormModal').classList.remove('hidden');
+    }
+
+    function closeBillForm() { document.getElementById('billFormModal').classList.add('hidden'); }
+
+    function saveBill() {
+        const id = document.getElementById('custId').value.trim();
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const address = document.getElementById('custAddress').value.trim();
+        const amt = document.getElementById('custBill').value.trim();
+        const oldId = document.getElementById('editOldId').value;
+
+        if (!id || !name || !amt) return alert(isBn() ? "সব ঘর পূরণ করুন!" : "Please fill required fields!");
+
+        if (!isEditing) {
+            if (allData.some(i => i.customerId === id)) return alert(isBn() ? "ইউজারনেম ইতিমধ্যেই আছে!" : "Username already exists!");
+            allData.push({ customerId: id, customerName: name, phone: phone, address: address, amount: amt, status: 'Due', paidMonth: '', paidAmount: 0 });
+        } else {
+            allData = allData.map(i => i.customerId === oldId ? { ...i, customerId: id, customerName: name, phone: phone, address: address, amount: amt } : i);
+        }
+
+        if (currentFilteredData !== null) {
+            currentFilteredData = null;
+            document.getElementById('searchInput').value = "";
+        }
+
+        saveActivePortalData();
+        renderPortalSwitcher();
+        updateStats();
+        renderList(allData, false);
+        closeBillForm();
+    }
+
+    function updatePassword() {
+        const p = document.getElementById('newPassInput').value;
+        if (p.length < 4) return alert("Minimum 4 characters!");
+        userData.pass = p;
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        idbSetState('user_data', userData);
+        alert("Updated!");
+    }
+
+    function toggleFingerprint(val) {
+        appSettings.finger = val;
+        localStorage.setItem('app_settings', JSON.stringify(appSettings));
+        idbSetState('app_settings', appSettings);
+        applyFeaturePermissions();
+    }
+
+    function toggleLanguage() {
+        appSettings.lang = (appSettings.lang === 'en') ? 'bn' : 'en';
+        localStorage.setItem('app_settings', JSON.stringify(appSettings));
+        idbSetState('app_settings', appSettings);
+        applyLanguage(appSettings.lang);
+        renderPortalSwitcher();
+        renderList(getActiveDataset(), false);
+    }
+
+    function applyLanguage(lang) {
+        const bn = lang === 'bn';
+
+        document.querySelectorAll('.btn-label').forEach(el => {
+            if (el.getAttribute('data-en')) el.innerText = bn ? el.getAttribute('data-bn') : el.getAttribute('data-en');
+        });
+
+        document.getElementById('langBtn').innerText = bn ? 'English' : 'Bangla';
+        document.getElementById('labelCollection').innerText = bn ? 'এই মাসের কালেকশন' : 'This Month Collection';
+        document.getElementById('labelActive').innerText = bn ? 'সক্রিয় কাস্টমার' : 'Active Users';
+        document.getElementById('searchInput').placeholder = bn ? 'খুঁজুন (ইউজারনেম, নাম, ফোন)...' : 'Search (Username, Name, Phone)...';
+        document.getElementById('labelPerPage').innerText = bn ? 'প্রতি পেজে:' : 'Per Page:';
+
+        const pageSizeOpts = document.querySelectorAll('#pageSizeSelect option');
+        pageSizeOpts.forEach(opt => {
+            opt.textContent = bn ? opt.getAttribute('data-bn') : opt.getAttribute('data-en');
+        });
+
+        document.querySelector('#btnNewPortal span').textContent = bn ? 'নতুন পোর্টাল' : 'New Portal';
+        document.querySelector('#btnRenamePortal span').textContent = bn ? 'নাম লিখুন' : 'Rename';
+        document.querySelector('#btnDeletePortal span').textContent = bn ? 'ডিলিট পোর্টাল' : 'Delete Portal';
+        document.querySelector('#btnAllPortals span').textContent = bn ? 'সবার অবস্থা' : 'All Portals';
+
+        document.getElementById('createPortalTitle').innerText = bn ? 'নতুন পোর্টাল তৈরি করুন' : 'Create New Portal';
+        document.getElementById('createPortalDesc').innerText = bn ? 'নতুন পোর্টাল বা খাতার নাম লিখুন:' : 'Add a new portal or ledger name:';
+        document.getElementById('createPortalLockLabel').innerText = bn ? 'নতুন পোর্টালটি লক রাখবেন?' : 'Keep this portal locked?';
+
+        document.getElementById('renamePortalTitle').innerText = bn ? 'পোর্টালের নাম লিখুন' : 'Rename Portal';
+        document.getElementById('renamePortalDesc').innerText = bn ? 'এই পোর্টাল বা খাতার নাম লিখুন:' : 'Enter a name for this portal or area ledger:';
+
+        document.getElementById('allPortalsModalTitle').innerText = bn ? 'সব পোর্টালের অবস্থা' : 'All Portals Summary';
+        document.getElementById('importDesc').innerText = bn ? 'আপনার এক্সেল ফাইল (.xlsx / .xls / .csv) সিলেক্ট করুন:' : 'Select your Excel file (.xlsx / .xls / .csv) to import client records automatically:';
+        document.getElementById('clearAllSub').innerText = bn ? 'বর্তমান পোর্টালের সব কাস্টমার মুছে ফেলুন' : 'Remove all customers in current portal';
+    }
+
+    function toggleNotepad() { document.getElementById('notepadModal').classList.toggle('hidden'); }
+    function saveNote() {
+        const noteVal = document.getElementById('notepadTextArea').value;
+        localStorage.setItem('user_notepad_data', noteVal);
+        idbSetState('user_notepad_data', noteVal);
+        alert("Saved!");
+        toggleNotepad();
+    }
+    function updateTheme(c) {
+        document.documentElement.style.setProperty('--primary-color', c);
+        localStorage.setItem('theme_color', c);
+        idbSetState('theme_color', c);
+    }
+    function toggleSettings() { applyFeaturePermissions(); document.getElementById('settingsMenu').classList.toggle('hidden'); }
+
+    function updateStats() {
+        const paid = allData.filter(i => i.status === 'Paid').reduce((s, i) => s + Number(i.paidAmount || 0), 0);
+        document.getElementById('balanceText').innerText = paid.toLocaleString();
+        document.getElementById('totalClientsCount').innerText = allData.length;
+    }
+
+    function showLogin() {
+        document.getElementById('registerPage').classList.add('hidden');
+        document.getElementById('loginPage').classList.remove('hidden');
+        if (userData) document.getElementById('loginEmail').value = userData.email;
+        applyFeaturePermissions();
+    }
+
+    function handleRegister() {
+        const n = document.getElementById('regName').value;
+        const e = document.getElementById('regEmail').value;
+        const p = document.getElementById('regPass').value;
+        const o = document.getElementById('regOTP').value;
+        if (o !== APP_OTP) return alert("Wrong OTP!");
+        userData = { name: n, email: e, pass: p };
+        localStorage.setItem('user_data', JSON.stringify(userData));
+        idbSetState('user_data', userData);
+
+        featurePermissions = {
+            fiberUnlocked: document.getElementById('permFiber').checked,
+            oltUnlocked: document.getElementById('permOLT').checked,
+            fingerEnabled: document.getElementById('permFinger').checked,
+            themesEnabled: document.getElementById('permThemes').checked
+        };
+        localStorage.setItem('feature_permissions', JSON.stringify(featurePermissions));
+        idbSetState('feature_permissions', featurePermissions);
+        applyFeaturePermissions();
+        showLogin();
+    }
+
+    function goToDashboard() {
+        document.getElementById('authContainer').classList.add('hidden');
+        document.getElementById('mainDashboard').classList.remove('hidden');
+        document.getElementById('displayUserName').innerText = userData.name;
+        applyFeaturePermissions();
+        renderPortalSwitcher();
+        renderList(getActiveDataset(), false);
+    }
+
+    function editCustomer(id) {
+        const item = allData.find(i => i.customerId === id);
+        if (!item) return;
+        isEditing = true;
+        document.getElementById('editOldId').value = item.customerId;
+        document.getElementById('custId').value = item.customerId;
+        document.getElementById('custName').value = item.customerName;
+        document.getElementById('custPhone').value = item.phone;
+        document.getElementById('custAddress').value = item.address || '';
+        document.getElementById('custBill').value = item.amount;
+        document.getElementById('formTitle').innerText = isBn() ? "কাস্টমার এডিট" : "Edit Customer";
+        document.getElementById('billFormModal').classList.remove('hidden');
+    }
+
+    function openPayModal(id, amt) {
+        const d = new Date();
+        document.getElementById('payTargetId').value = id;
+        document.getElementById('payAmount').value = amt;
+        document.getElementById('payMonthName').value = d.toLocaleString('default', { month: 'long' }) + " " + d.getFullYear();
+        document.getElementById('payModal').classList.remove('hidden');
+    }
+
+    function confirmPayment() {
+        const id = document.getElementById('payTargetId').value;
+        const month = document.getElementById('payMonthName').value;
+        const amount = document.getElementById('payAmount').value;
+        if (!month || !amount) return alert(isBn() ? "তথ্য দিন!" : "Please enter details!");
+
+        allData = allData.map(i => i.customerId === id ? { ...i, status: 'Paid', paidMonth: month, paidAmount: amount } : i);
+        if (currentFilteredData !== null) {
+            currentFilteredData = currentFilteredData.map(i => i.customerId === id ? { ...i, status: 'Paid', paidMonth: month, paidAmount: amount } : i);
+        }
+
+        saveActivePortalData();
+        renderPortalSwitcher();
+        document.getElementById('payModal').classList.add('hidden');
+        updateStats();
+        renderList(getActiveDataset(), false);
+    }
+
+    function showDueList() {
+        currentFilteredData = allData.filter(i => i.status !== 'Paid');
+        renderList(currentFilteredData, true);
+    }
+
+    function showPaidList() {
+        currentFilteredData = allData.filter(i => i.status === 'Paid');
+        renderList(currentFilteredData, true);
+    }
+</script>
+</body>
+</html>
